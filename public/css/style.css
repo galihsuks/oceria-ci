@@ -4,6 +4,7 @@
     --putih: white;
     --hitam: black;
     --hijau: #0cca98;
+    --hijauMuda: #c6f5e8;
     --merah: #e2125d;
     font-family: "Outfit", sans-serif;
     margin: 0;
@@ -18,4 +19,138 @@ body {
 }
 .konten {
     flex: 1;
+}
+
+.material-icons {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+.btn-default {
+    background-color: var(--hijau);
+    color: white;
+    border: none;
+    outline: none;
+    height: fit-content;
+    width: fit-content;
+    /* padding: 0; */
+    padding: 0.4em 0.6em;
+    border-radius: 0.4em;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    text-decoration: none;
+    cursor: pointer;
+}
+.btn-default:hover {
+    background-color: var(--hijauMuda);
+    color: var(--hijau);
+}
+
+.pagination {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.pagination .pag-item {
+    text-decoration: none;
+    color: gray;
+    border-radius: 1em;
+    padding: 0.5em;
+    width: 2em;
+    height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.pagination .pag-item:hover {
+    background-color: whitesmoke;
+    color: black;
+}
+.pagination .pag-item.aktif {
+    font-weight: bold;
+    color: var(--hijau);
+}
+.pagination .pag-item.disable {
+    pointer-events: none;
+    /* display: none; */
+    color: whitesmoke;
+}
+
+.baris-ke-kolom {
+    display: flex;
+    gap: 2em;
+}
+.baris-ke-kolom-reverse {
+    display: flex;
+    gap: 2em;
+}
+.limapuluh-ke-seratus {
+    width: 50%;
+}
+@media (max-width: 600px) {
+    .limapuluh-ke-seratus {
+        width: 100%;
+    }
+    .baris-ke-kolom {
+        flex-direction: column;
+        gap: 1em;
+    }
+    .baris-ke-kolom-reverse {
+        flex-direction: column-reverse;
+        gap: 1em;
+    }
+}
+
+#container-list-faskes {
+    display: grid;
+    gap: 1em;
+    grid-template-columns: repeat(2, 1fr);
+}
+#container-list-faskes p {
+    margin: 0;
+    color: gray;
+}
+#container-list-faskes input[name="kdppk"] + label .list-faskes {
+    padding: 1em;
+    border-radius: 1em;
+    border: 1px solid rgb(217, 217, 217);
+    cursor: pointer;
+}
+#container-list-faskes input[name="kdppk"]:checked + label .list-faskes {
+    border: 3px solid var(--hijau);
+}
+@media (max-width: 600px) {
+    #container-list-faskes {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+#container-confirm {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100svh;
+    justify-content: center;
+    align-items: start;
+    padding-top: 1em;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 3;
+}
+
+.container-rm {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+.container-rm .item-rm {
+    display: flex;
+    gap: 5px;
+}
+@media (max-width: 600px) {
+    .container-rm .item-rm {
+        flex-direction: column;
+    }
 }

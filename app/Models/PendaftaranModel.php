@@ -9,6 +9,7 @@ class PendaftaranModel extends Model
     protected $table = 'pendaftaran';
     protected $allowedFields = [
         'id',
+        'noUrut',
         'kdProviderPeserta',
         'tglDaftar',
         'noKartu',
@@ -27,10 +28,22 @@ class PendaftaranModel extends Model
         'rujukBalik',
         'kdTkp',
         'bpjs',
+        'noRM',
+        'status',
     ];
 
-    public function getPendaftaranTgl($tglDaftar)
+    public function getPendaftaran($tglDaftar, $jenis = 'all')
     {
-        return $this->where(['tglDaftar' => $tglDaftar])->findAll();
+        switch ($jenis) {
+            case 'all':
+                return $this->where(['tglDaftar' => $tglDaftar])->findAll();
+                break;
+            case 'bpjs':
+                return $this->where(['tglDaftar' => $tglDaftar, 'bpjs' => true])->findAll();
+                break;
+            case 'non':
+                return $this->where(['tglDaftar' => $tglDaftar, 'bpjs' => false])->findAll();
+                break;
+        }
     }
 }
