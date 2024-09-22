@@ -376,15 +376,6 @@
                         <option>Loading..</option>
                     </select>
                 </div>
-                <script>
-                    async function getStatusPulang() {
-                        const fetchDokter = await fetch('/com/statuspulang/<?= $pendaftaran['kdTkp'] == '20' ? 'true' : 'false'; ?>/<?= $pelayanan['kdStatusPulang']; ?>');
-                        const res = await fetchDokter.text();
-                        document.getElementById('select-status-pulang').innerHTML = '<label class="form-label">Status Pulang</label>'
-                        document.getElementById('select-status-pulang').innerHTML += res
-                    }
-                    getStatusPulang()
-                </script>
                 <div class="align-items-end display-rujukan-vertikal <?= $pelayanan['kdStatusPulang'] == '4' ? 'd-flex' : 'd-none'; ?>" style="width: fit-content;">
                     <button type="button" class="btn-default" onclick="openCariRujukan()">Ubah Faskes Rujukan</button>
                 </div>
@@ -417,7 +408,6 @@
     const inputTglDaftarElm = document.querySelector('input[name="tglDaftar"]')
     const inputNoUrutElm = document.querySelector('input[name="noUrut"]')
     const containerDetailPesertaElm = document.getElementById('container-detail-peserta');
-    const kdStatusPulangElm = document.querySelector('select[name="kdStatusPulang"]');
     const inputDiagElm = document.querySelectorAll('.input-diagnosa');
     const displayDiagElm = document.querySelectorAll('.display-diagnosa');
     const displayRujukanVertikalElm = document.querySelectorAll('.display-rujukan-vertikal');
@@ -550,21 +540,29 @@
         })
     });
 
-    kdStatusPulangElm.addEventListener('change', (e) => {
-        const kdStatusPulang = e.target.value;
-        if (kdStatusPulang == '4') {
-            displayRujukanVertikalElm.forEach(element => {
-                element.classList.remove('d-none')
-                element.classList.add('d-flex')
-            });
-            cariFaskesKhususElm.classList.remove('d-none')
-        } else {
-            displayRujukanVertikalElm.forEach(element => {
-                element.classList.add('d-none')
-                element.classList.remove('d-flex')
-            });
-        }
-    })
+    async function getStatusPulang() {
+        const fetchDokter = await fetch('/com/statuspulang/<?= $pendaftaran['kdTkp'] == '20' ? 'true' : 'false'; ?>/<?= $pelayanan['kdStatusPulang']; ?>');
+        const res = await fetchDokter.text();
+        document.getElementById('select-status-pulang').innerHTML = '<label class="form-label">Status Pulang</label>'
+        document.getElementById('select-status-pulang').innerHTML += res
+        const kdStatusPulangElm = document.querySelector('select[name="kdStatusPulang"]');
+        kdStatusPulangElm.addEventListener('change', (e) => {
+            const kdStatusPulang = e.target.value;
+            if (kdStatusPulang == '4') {
+                displayRujukanVertikalElm.forEach(element => {
+                    element.classList.remove('d-none')
+                    element.classList.add('d-flex')
+                });
+                cariFaskesKhususElm.classList.remove('d-none')
+            } else {
+                displayRujukanVertikalElm.forEach(element => {
+                    element.classList.add('d-none')
+                    element.classList.remove('d-flex')
+                });
+            }
+        })
+    }
+    getStatusPulang()
 
     function openCariRujukan() {
         containerCariRujukanElm.classList.remove('d-none')

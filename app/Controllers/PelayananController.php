@@ -25,7 +25,7 @@ class PelayananController extends BaseController
     protected $pasienModel;
     public function __construct()
     {
-        $this->kodePPK = '095';
+        $this->kodePPK = '';
         $this->consId = '';
         $this->secretKey = '';
         $this->userkeyPCare = '';
@@ -265,22 +265,22 @@ class PelayananController extends BaseController
             }
         }
         //Rujuk Horizontal
-        if ($datanya['kdStatusPulang'] == '6') {
-            $datanya['rujukLanjut'] = [
-                "tglEstRujuk" => date("d-m-Y", strtotime($this->request->getVar('tglEstRujuk'))),
-                "kdppk" => $this->request->getVar('kdppk'),
-                "subSpesialis" => [
-                    "kdSubSpesialis1" => $this->request->getVar('kdSubSpesialis1'),
-                    "kdSarana" => $this->request->getVar('kdSarana'),
-                ],
-                "khusus" => [
-                    "kdKhusus" => $this->request->getVar('kdKhusus'),
-                    "kdSubSpesialis" => $this->request->getVar('kdSubSpesialis'),
-                    "catatan" => $this->request->getVar('catatan'),
-                ]
-            ];
-            $datanya['kdPoliRujukInternal'] = $this->request->getVar('kdPoliRujukInternal');
-        }
+        // if ($datanya['kdStatusPulang'] == '6') {
+        //     $datanya['rujukLanjut'] = [
+        //         "tglEstRujuk" => date("d-m-Y", strtotime($this->request->getVar('tglEstRujuk'))),
+        //         "kdppk" => $this->request->getVar('kdppk'),
+        //         "subSpesialis" => [
+        //             "kdSubSpesialis1" => $this->request->getVar('kdSubSpesialis1'),
+        //             "kdSarana" => $this->request->getVar('kdSarana'),
+        //         ],
+        //         "khusus" => [
+        //             "kdKhusus" => $this->request->getVar('kdKhusus'),
+        //             "kdSubSpesialis" => $this->request->getVar('kdSubSpesialis'),
+        //             "catatan" => $this->request->getVar('catatan'),
+        //         ]
+        //     ];
+        //     $datanya['kdPoliRujukInternal'] = $this->request->getVar('kdPoliRujukInternal');
+        // }
 
         // dd([
         //     'getVar' => $this->request->getVar(),
@@ -311,7 +311,10 @@ class PelayananController extends BaseController
             }
             $hasil = json_decode($response, true);
 
-            // dd($hasil);
+            dd([
+                'datanya' => $datanya,
+                'hasil' => $hasil
+            ]);
 
             if (substr($hasil['metaData']['code'], 0, 1) != '2') {
                 session()->setFlashdata('msg', $hasil['response'][0]['field'] . ' ' . $hasil['response'][0]['message']);
@@ -938,8 +941,8 @@ class PelayananController extends BaseController
             "kdDiag3" => $this->request->getVar('kdDiag3') ? $this->request->getVar('kdDiag3') : null,
             "kdPoliRujukInternal" => null,
             "rujukLanjut" => null,
-            "kdTacc" => -1, //ibuk biasanya tanpaTACC
-            "alasanTacc" => null, //ibuk biasanya tanpaTACC
+            "kdTacc" => $this->request->getVar('kdTacc'),
+            "alasanTacc" => $this->request->getVar('alasanTacc') == 'null' ? null : $this->request->getVar('alasanTacc'),
             "anamnesa" => $this->request->getVar('anamnesa'),
             "alergiMakan" => $this->request->getVar('alergiMakan'),
             "alergiUdara" => $this->request->getVar('alergiUdara'),
@@ -1018,9 +1021,10 @@ class PelayananController extends BaseController
                 return "cURL Error #:" . $err;
             }
             $hasil = json_decode($response, true);
-
+            // dd($hasil);
             if (substr($hasil['metaData']['code'], 0, 1) != '2') {
-                session()->setFlashdata('msg', $hasil['response'][0]['field'] . ' ' . $hasil['response'][0]['message']);
+                if (isset($hasil['response'][0])) session()->setFlashdata('msg', $hasil['response'][0]['field'] . ' ' . $hasil['response'][0]['message']);
+                else session()->setFlashdata('msg', $hasil['metaData']['message']);
                 return redirect()->to('/pelayanan/edit/' . $id)->withInput();
             }
         }
@@ -1171,5 +1175,75 @@ class PelayananController extends BaseController
             'msg' => session()->getFlashdata('msg') ? session()->getFlashdata('msg') : false
         ];
         return view('pelayanan/list', $data);
+    }
+    public function listPelayananPeserta()
+    {
+        $getRiwayatKunjungan =  session()->getFlashdata('kunjungan') ? session()->getFlashdata('kunjungan') : [];
+        $bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        foreach ($getRiwayatKunjungan as $ind_k => $k) {
+            $getRiwayatKunjungan[$ind_k]['tglKunjungan'] = explode('-', $k['tglKunjungan'])[0] . " " . $bulan[(int)explode('-', $k['tglKunjungan'])[1] - 1] . " " . explode('-', $k['tglKunjungan'])[2];
+            $getRiwayatKunjungan[$ind_k]['tglPulang'] = explode('-', $k['tglPulang'])[0] . " " . $bulan[(int)explode('-', $k['tglPulang'])[1] - 1] . " " . explode('-', $k['tglPulang'])[2];
+        }
+        $data = [
+            'title' => 'Riwayat Pelayanan BPJS',
+            'pelayanan' => $getRiwayatKunjungan,
+            'msg' => session()->getFlashdata('msg') ? session()->getFlashdata('msg') : false,
+            'noka' => session()->getFlashdata('noka') ? session()->getFlashdata('noka') : ''
+        ];
+        return view('pelayanan/listPeserta', $data);
+    }
+    public function cariRiwayatKunBpjs()
+    {
+        $noka = $this->request->getVar('noka');
+        if ($noka == '') {
+            session()->setFlashdata('msg', 'No kartu harus diisi');
+            return redirect()->to('/pelayanan/listpeserta');
+        }
+        if (!is_numeric($noka)) {
+            session()->setFlashdata('msg', 'No kartu harus berisi angka');
+            return redirect()->to('/pelayanan/listpeserta');
+        }
+        if (strlen($noka) < 13) {
+            session()->setFlashdata('msg', 'No kartu harus berjumlah 13 digit');
+            return redirect()->to('/pelayanan/listpeserta');
+        }
+        //get spesialis
+        date_default_timezone_set('UTC');
+        $tStamp = strval(time() - strtotime('1970-01-01 00:00:00'));
+        $variabel1 = $this->consId . "&" . $tStamp;
+        $signature = base64_encode(hash_hmac('sha256', $variabel1, $this->secretKey, true));
+
+        $arrCurl = $this->arrCurl;
+        $arrCurl[CURLOPT_URL] = $this->baseUrl . "/kunjungan/peserta/" . $noka;
+        $arrCurl[CURLOPT_CUSTOMREQUEST] = "GET";
+        $arrCurl[CURLOPT_HTTPHEADER][4] = "X-timestamp: " . $tStamp;
+        $arrCurl[CURLOPT_HTTPHEADER][5] = "X-signature: " . $signature;
+        $arrCurl[CURLOPT_HTTPHEADER][6] = "content-type: application/json";
+
+        $curl = curl_init();
+        curl_setopt_array($curl, $arrCurl);
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+        if ($err) {
+            return "cURL Error #:" . $err;
+        }
+        $hasil = json_decode($response, true);
+        // dd($hasil);
+        if (substr($hasil['metaData']['code'], 0, 1) == '4') {
+            return $this->response->setJSON($hasil, false);
+        }
+        $string = $hasil['response'];
+        $key = $this->consId . $this->secretKey . $tStamp;
+        $encrypt_method = 'AES-256-CBC';
+        $key_hash = hex2bin(hash('sha256', $key));
+        $iv = substr(hex2bin(hash('sha256', $key)), 0, 16);
+        $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key_hash, OPENSSL_RAW_DATA, $iv);
+        $hasil_dekrip = \LZCompressor\LZString::decompressFromEncodedURIComponent($output);
+        $getRiwayatKunjungan = json_decode($hasil_dekrip, true)['list'];
+
+        session()->setFlashdata('kunjungan', $getRiwayatKunjungan);
+        session()->setFlashdata('noka', $noka);
+        return redirect()->to('/pelayanan/listpeserta');
     }
 }

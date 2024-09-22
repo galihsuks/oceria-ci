@@ -6,7 +6,11 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
+//Main 
 $routes->get('/', 'MainController::home');
+$routes->get('/provider', 'MainController::refProvider');
+$routes->get('/rujukan', 'MainController::rujukan');
+$routes->post('/rujukan', 'MainController::getRujukan');
 
 //PENDAFTARAN
 $routes->get('/pendaftaran/add', 'PendaftaranController::addPendaftaran');
@@ -24,6 +28,8 @@ $routes->get('/movekun', 'PelayananController::moveFromKunjungan');
 $routes->get('/gantiid', 'PelayananController::gantiIdLama');
 $routes->get('/pelayanan/list', 'PelayananController::listPelayanan');
 $routes->get('/pelayanan/list/(:any)', 'PelayananController::listPelayanan/$1');
+$routes->get('/pelayanan/listpeserta', 'PelayananController::listPelayananPeserta');
+$routes->post('/pelayanan/caririwayatkunbpjs', 'PelayananController::cariRiwayatKunBpjs');
 $routes->get('/pelayanan/del/(:any)', 'PelayananController::delPelayanan/$1');
 $routes->get('/pelayanan/edit/(:any)', 'PelayananController::editPelayanan/$1');
 $routes->post('/pelayanan/edit/(:any)', 'PelayananController::actionEditPelayanan/$1');
@@ -79,3 +85,16 @@ $routes->get('/com/khusus', 'ApiBpjsController::getRefKhususKomponen');
 $routes->get('/com/khusus/(:any)', 'ApiBpjsController::getRefKhususKomponen/$1');
 $routes->get('/com/sarana', 'ApiBpjsController::getRefSaranaKomponen');
 $routes->get('/com/sarana/(:any)', 'ApiBpjsController::getRefSaranaKomponen/$1');
+
+//========================= ANTREAN ONLINE ================================//
+//WS FKTP
+$routes->get('/antrol/auth', 'WsfktpController::token');
+$routes->get('/antrol/antrean/status/(:any)/(:any)', 'WsfktpController::statusAntrean/$1/$2');
+$routes->post('/antrol/antrean', 'WsfktpController::ambilAntrean');
+$routes->get('/antrol/antrean/sisapeserta/(:any)/(:any)/(:any)', 'WsfktpController::sisaAntrean/$1/$2/$3');
+$routes->post('/antrol/peserta', 'WsfktpController::pasienBaru');
+$routes->put('/antrol/antrean/batal', 'WsfktpController::batalAntrean');
+
+// $routes->post('/antrol/v2/antrean', 'WsfktpController::ambilAntreanV2');
+// $routes->get('/antrol/v2/antrean/status/(:any)/(:any)', 'WsfktpController::statusAntreanV2/$1/$2');
+// $routes->put('/antrol/v2/antrean/batal', 'WsfktpController::batalAntreanV2');

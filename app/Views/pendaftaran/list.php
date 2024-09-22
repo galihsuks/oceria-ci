@@ -40,6 +40,9 @@
             <div style="flex: 2;"><?= $p['status']; ?></div>
             <div style="flex: 2;"><a onclick="openConfirm('NoUrut <?= $p['noUrut']; ?> pada tanggal <?= $p['tglDaftar']; ?> akan dihapus?','/pendaftaran/del/<?= $p['id']; ?>')" class="btn-default"><i class="material-icons">delete_forever</i> Hapus</a></div>
         </div>
+    <?php }
+    if (count($pendaftaran) <= 0) { ?>
+        <div>Data tidak ditemukan</div>
     <?php } ?>
 </div>
 <script>

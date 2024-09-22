@@ -21,7 +21,7 @@ class PendaftaranController extends BaseController
     protected $pasienModel;
     public function __construct()
     {
-        $this->kodePPK = '095';
+        $this->kodePPK = '';
         $this->consId = '';
         $this->secretKey = '';
         $this->userkeyPCare = '';

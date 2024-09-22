@@ -163,7 +163,7 @@
             <div class="d-flex gap-1 mb-2">
                 <div style="flex: 1">
                     <label class="form-label">Tanggal Pulang</label>
-                    <input type="date" class="form-control" name="tglPulang" min="<?= $tanggal; ?>" value="<?= $tanggal; ?>">
+                    <input type="date" class="form-control" name="tglPulang" max="<?= $tanggal; ?>" value="<?= $tanggal; ?>">
                 </div>
                 <div id="select-dokter" style="flex: 1">
                     <label class="form-label">Dokter</label>

@@ -21,7 +21,7 @@ class ApiBpjsController extends BaseController
     protected $kunjunganModel;
     public function __construct()
     {
-        $this->kodePPK = '095';
+        $this->kodePPK = '';
         $this->consId = '';
         $this->secretKey = '';
         $this->userkeyPCare = '';

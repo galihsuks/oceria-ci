@@ -22,8 +22,18 @@
                         Pelayanan
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/pelayanan/list">Riwayat Pelayanan</a></li>
+                        <li><a class="dropdown-item" href="/pelayanan/list">Riwayat Pelayanan Tanggal</a></li>
+                        <li><a class="dropdown-item" href="/pelayanan/listpeserta">Riwayat Pelayanan Peserta BPJS</a></li>
                         <li><a class="dropdown-item" href="/pelayanan/add">Tambahkan Pelayanan</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Fitur Lain
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/provider">Cari referensi provider</a></li>
+                        <li><a class="dropdown-item" href="/rujukan">Cari Rujukan</a></li>
                     </ul>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="/pasien">Pasien</a></li>
